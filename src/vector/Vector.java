@@ -1,9 +1,10 @@
 package vector;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Iterator;
 
-public interface Vector extends Cloneable, Iterator<KeyValue>, Serializable {
+public interface Vector extends Cloneable, Serializable {
 
     public int length();
 
