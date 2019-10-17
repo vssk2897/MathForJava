@@ -1,9 +1,9 @@
 package vector;
 
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
@@ -28,7 +28,8 @@ public class DenseVector implements Vector {
   }
 
   public DenseVector(Double[] arr) {
-   
+    this.vec = Arrays.asList(arr);
+    this.size = arr.length;
   }
  
   public DenseVector(List<Double> vec) {
@@ -72,6 +73,19 @@ public class DenseVector implements Vector {
   @Override
   public void delete(int index) {
     this.vec.remove(index);
+  }
+
+  @Override
+  public Double min() {
+      return this.vec.stream()
+                      .reduce(Double.MAX_VALUE,Double::min);
+  }
+
+  @Override
+  public Double max()
+  {   
+      return this.vec.stream()
+                      .reduce(Double.MIN_VALUE,Double::max);
   }
 
   @Override
@@ -142,6 +156,23 @@ public class DenseVector implements Vector {
         return vec.get(vec.size / 2) / 2 + vec.get(vec.size / 2 + 1) / 2;
   }
 
+  @Override
+  public Double calculateSkewness() {
+    Double numerator = this.vec.stream()
+                              .parallel()
+                              .map(item -> Math.pow(item - this.mean, 3))
+                              .reduce(0.0, Double::sum) / this.size;
+    Double denominator = this.vec.stream()
+                                .parallel()
+                                .map(item -> Math.pow(item - this.mean, 2))
+                                .reduce(0.0, Double::sum) / this.size;
+    Double skew = numerator / Math.pow(denominator,1.5);
+    if(this.size > 3) {
+      skew = Math.sqrt((this.size * (this.size - 1)) / (this.size - 2) * skew);
+    }
+    return skew;  
+  }
+  
   @Override
   public void generateStatistics() {
     this.calculateSum();
