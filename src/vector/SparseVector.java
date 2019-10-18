@@ -18,6 +18,8 @@ public class SparseVector implements Vector {
   public Double median;
   public Double mode;
   public Double variance;
+  public Double skew;
+  public Double kurtosis;
   
   /*
   public SparseVector(int length) { 
@@ -196,6 +198,8 @@ public class SparseVector implements Vector {
     this.calculateMean();
     this.median = this.calculateMedian();
     this.calculateVariance();
+    this.skew = this.calculateSkewness();
+    this.kurtosis = this.calculateKurtosis();
   }
 
   public Double dotProduct(SparseVector vec2) {

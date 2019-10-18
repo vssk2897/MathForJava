@@ -19,6 +19,8 @@ public class DenseVector implements Vector {
   public Double mode;
   public Double variance;
   public Double sum_corrected;
+  public Double skew;
+  public Double kurtosis;
 
   public DenseVector(double[] arr) {
     this.vec = DoubleStream.of(arr)
@@ -202,5 +204,7 @@ public class DenseVector implements Vector {
     this.calculateMean();
     this.median = this.calculateMedian();
     this.calculateVariance();
+    this.skew = this.calculateSkewness();
+    this.kurtosis = this.calculateKurtosis();
   }
 }
