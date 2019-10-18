@@ -54,6 +54,6 @@ public interface Vector extends Cloneable, Serializable {
 
     public Double max();
 
-    public Vector dot(Vector v);
+   
 
 }

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
 public class SparseVector implements Vector {
   
@@ -12,11 +13,11 @@ public class SparseVector implements Vector {
   public Double sum = 0.0;
   public Double sum_corrected = 0.0;
   private List<Double> vec;
-  private int size;
-  private Double mean;
-  private Double median;
-  private Double mode;
-  private Double variance;
+  public int size;
+  public Double mean;
+  public Double median;
+  public Double mode;
+  public Double variance;
   
   /*
   public SparseVector(int length) { 
@@ -177,10 +178,32 @@ public class SparseVector implements Vector {
   }
 
   @Override
+    public Double calculateKurtosis() {
+      Double numerator = this.vec.parallelStream()
+                                .map(item -> Math.pow(item - this.mean, 4))
+                                .reduce(0.0, Double::sum) / this.size ;
+      
+      Double denominator = this.vec.parallelStream()
+                                  .map(item -> Math.pow(item - this.mean, 2))
+                                  .reduce(0.0, Double::sum) / this.size;
+      
+      return numerator / Math.pow(denominator, 2) - 3;
+    }
+
+  @Override
   public void generateStatistics() {
     this.calculateSum();
     this.calculateMean();
     this.median = this.calculateMedian();
     this.calculateVariance();
   }
+
+  public Double dotProduct(SparseVector vec2) {
+    return IntStream.range(0, this.size)
+                    .asDoubleStream()
+                    .parallel()
+                    .map(item -> this.get((int) item) * vec2.get((int)item))
+                    .reduce(0.0, Double::sum);
+  }
+  
 }
