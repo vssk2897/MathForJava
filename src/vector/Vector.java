@@ -18,9 +18,9 @@ public interface Vector extends Cloneable, Serializable {
             return (Vector) this.clone();
         }
         if(vec == null && this.isSparse()){
-            return new SparseVector((Vector) this);
+            return new SparseVector(vec.vec);
         }else if(this.isDense()){
-            return new DenseVector((Vector) this);
+            return new DenseVector(vec);
         }
         return vec;
     }
@@ -45,4 +45,15 @@ public interface Vector extends Cloneable, Serializable {
     public void calculateMean();
 
     public Double calculateMedian();
+
+    public Double calculateSkewness();
+
+    public Double calculateKurtosis();
+
+    public Double min();
+
+    public Double max();
+
+   
+
 }
