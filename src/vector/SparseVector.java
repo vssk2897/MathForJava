@@ -13,7 +13,7 @@ public class SparseVector implements Vector {
   private static final long serialVersionUID = 8551945475136264769L;
   public Double sum = 0.0;
   public Double sum_corrected = 0.0;
-  private List<Double> vec;
+  protected List<Double> vec;
   public int size;
   public Double mean;
   public Double median;

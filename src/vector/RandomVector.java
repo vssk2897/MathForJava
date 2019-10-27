@@ -65,6 +65,8 @@ public class RandomVector implements Vector {
 
   @Override
   public Double get(int index) {
+    if(index > this.size - 1 || index < 0)
+      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
     return this.vec.get(index);
   }
 
