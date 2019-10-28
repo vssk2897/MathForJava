@@ -1,5 +1,6 @@
 package vector;
 
+import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -16,8 +17,11 @@ public class RandomVector implements Vector {
   private Double variance;
   private Double skew;
   private Double kurtosis;
-  
+ 
   public RandomVector(int length) {
+    if(length ==0) {
+      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+    }
     this.vec = ThreadLocalRandom.current()
                     .doubles((long) length)
                     .boxed()
@@ -26,11 +30,14 @@ public class RandomVector implements Vector {
   }
 
   public RandomVector(int length, double origin, double bound) {
+    if(length ==0) {
+      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+    }
     this.vec = ThreadLocalRandom.current()
                                 .doubles((long) length, origin, bound)
                                 .boxed()
                                 .collect(Collectors.toList());
-    this.size =  length;                    
+    this.size =  length;   
   }
 
   
@@ -58,17 +65,19 @@ public class RandomVector implements Vector {
 
   @Override
   public Double get(int index) {
+    if(index > this.size - 1 || index < 0)
+      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
     return this.vec.get(index);
   }
 
   @Override
   public void set(int index, double value) {
-    throw new UnsupportedOperationException("Set operation is not permittable on Random Vector");
+    throw new UnsupportedOperationException(Error.RANDOM_VECTOR_SET_ERROR);
   }
 
   @Override
   public void delete(int index) {
-    throw new UnsupportedOperationException("delete operation is not permittable on Random Vector");
+    throw new UnsupportedOperationException(Error.RANDOM_VECTOR_DELETE_ERROR);
   }
 
   @Override

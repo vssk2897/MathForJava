@@ -1,5 +1,6 @@
 package vector;
 
+import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,9 @@ public class DenseVector implements Vector {
   public Double kurtosis;
 
   public DenseVector(double[] arr) {
+    if(arr.length ==0) {
+      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+    }
     this.vec = DoubleStream.of(arr)
                           .boxed()
                           .collect(Collectors.toList());
@@ -30,11 +34,17 @@ public class DenseVector implements Vector {
   }
 
   public DenseVector(Double[] arr) {
+    if(arr.length ==0) {
+      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+    }
     this.vec = Arrays.asList(arr);
     this.size = arr.length;
   }
  
   public DenseVector(List<Double> vec) {
+    if(vec.size()==0) {
+      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+    }
     this.vec = List.copyOf(vec);
     this.size = vec.size();
   }
@@ -62,18 +72,22 @@ public class DenseVector implements Vector {
 
   @Override
   public Double get(int index) {
+    if(index > this.size - 1 || index < 0)
+      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
     return this.vec.get(index);
   }
 
   @Override
   public void set(int index, double value) {
     if(index > this.size - 1 || index < 0)
-      throw new IndexOutOfBoundsException(index + " does not fit in [0," + this.size + ")");
+      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
     this.vec.set(index, Double.valueOf(value));
   }
 
   @Override
   public void delete(int index) {
+    if(index > this.size - 1 || index < 0)
+      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
     this.vec.remove(index);
   }
 
