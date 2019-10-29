@@ -1,21 +1,10 @@
-package vector;
+package com.blackhat.vector;
 
 import java.security.InvalidParameterException;
-import java.util.AbstractMap;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class HashedVector extends SparseVector {
   
@@ -85,7 +74,7 @@ public class HashedVector extends SparseVector {
     }    
   }
 
-  @Override
+  
   public Double dotProduct(HashedVector vec1, HashedVector vec2) {
     if(vec1.lengthSparse() < vec2.lengthSparse())
       return multiply(vec1, vec2);

@@ -1,4 +1,4 @@
-package vector;
+package com.blackhat.vector;
 
 import java.io.Serializable;
 
