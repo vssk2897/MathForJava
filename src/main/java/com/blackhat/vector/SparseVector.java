@@ -1,46 +1,58 @@
-package vector;
+package com.blackhat.vector;
 
 import java.security.InvalidParameterException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.IntStream;
 
-public class RandomVector implements Vector {
-  private static final long serialVersionUID = 5698565322324L;
-  private int size;
-  private List<Double> vec;
-  private Double sum;
-  private Double mean;
-  private Double median;
-  private Double mode;
-  private Double variance;
-  private Double skew;
-  private Double kurtosis;
- 
-  public RandomVector(int length) {
-    if(length ==0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
-    }
-    this.vec = ThreadLocalRandom.current()
-                    .doubles((long) length)
-                    .boxed()
-                    .collect(Collectors.toList());
-    this.size = length;
-  }
-
-  public RandomVector(int length, double origin, double bound) {
-    if(length ==0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
-    }
-    this.vec = ThreadLocalRandom.current()
-                                .doubles((long) length, origin, bound)
-                                .boxed()
-                                .collect(Collectors.toList());
-    this.size =  length;   
-  }
-
+public class SparseVector implements Vector {
   
+  private static final long serialVersionUID = 8551945475136264769L;
+  public Double sum = 0.0;
+  public Double sum_corrected = 0.0;
+  protected List<Double> vec;
+  public int size;
+  public Double mean;
+  public Double median;
+  public Double mode;
+  public Double variance;
+  public Double skew;
+  public Double kurtosis;
+  
+  /*
+  public SparseVector(int length) { 
+    this.vec = new ArrayList<Double>(); 
+  }
+  */
+
+  public SparseVector(List<Double> vec) {
+    if(vec.size() == 0) {
+      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+    }
+    this.vec = List.copyOf(vec);
+    this.size = vec.size();
+  }
+
+  public SparseVector(double[] arr) {
+    if(arr.length == 0) {
+      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+    }
+    this.vec = DoubleStream.of(arr)
+                          .boxed()
+                          .collect(Collectors.toList());
+    this.size=arr.length;
+  }
+
+  public SparseVector(Double[] arr) {
+    if(arr.length == 0) {
+      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+    }
+    this.vec = Arrays.asList(arr);
+    this.size = this.vec.size();
+  }
 
   @Override
   public int length() {
@@ -72,16 +84,20 @@ public class RandomVector implements Vector {
 
   @Override
   public void set(int index, double value) {
-    throw new UnsupportedOperationException(Error.RANDOM_VECTOR_SET_ERROR);
+    if(index > this.size - 1 || index < 0)
+      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
+    this.vec.set(index, Double.valueOf(value));
   }
 
   @Override
   public void delete(int index) {
-    throw new UnsupportedOperationException(Error.RANDOM_VECTOR_DELETE_ERROR);
+    if(index > this.size - 1 || index < 0)
+      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
+    this.vec.remove(index);
   }
 
   @Override
-  public RandomVector sortedVector() {
+  public SparseVector sortedVector() {
     Collections.sort(this.vec, (a, b) -> a < b ? -1 : a == b ? 0 : 1);
     return this;
   }
@@ -110,6 +126,28 @@ public class RandomVector implements Vector {
                       .reduce(Double.MIN_VALUE,Double::max);
   }
 
+  public void kahanSum() {
+    /*
+    this.vec.stream()
+            .map(Double::valueOf)
+            .forEach((e) -> {
+            double y = e - c;
+            double t = sum + y;
+            c = t - sum - y; 
+            sum = t;
+          });
+    */
+    Double c = 0.0;
+    Double sum = 0.0;
+    for(int i = 0; i < this.length(); i++) {
+      Double y = this.get(i) - c;
+      Double t = sum + y;
+      c = t - sum - y; 
+      sum = t;
+    }
+    this.sum_corrected = sum;
+  }
+  
   @Override
   public void calculateSum() {
     this.sum = this.vec.parallelStream()
@@ -131,7 +169,7 @@ public class RandomVector implements Vector {
 
   @Override
   public Double calculateMedian() {
-    RandomVector vec = sortedVector();
+    SparseVector vec = sortedVector();
     if(vec.size % 2 != 0)
         return vec.get(vec.size / 2);
     else
@@ -177,4 +215,13 @@ public class RandomVector implements Vector {
     this.skew = this.calculateSkewness();
     this.kurtosis = this.calculateKurtosis();
   }
+
+  public Double dotProduct(SparseVector vec2) {
+    return IntStream.range(0, this.size)
+                    .asDoubleStream()
+                    .parallel()
+                    .map(item -> this.get((int) item) * vec2.get((int)item))
+                    .reduce(0.0, Double::sum);
+  }
+  
 }
