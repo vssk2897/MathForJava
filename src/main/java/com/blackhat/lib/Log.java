@@ -31,7 +31,7 @@ public class Log {
   }
 
   public void error(String message, Exception exception) {
-    this.LOGGER.error(message, ex);
+    this.LOGGER.error(message, exception);
   }
        
  
