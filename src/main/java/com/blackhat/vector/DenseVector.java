@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
-
+import com.blackhat.lib.*;
 
 public class DenseVector implements Vector {
 
@@ -22,10 +22,12 @@ public class DenseVector implements Vector {
   public Double sum_corrected;
   public Double skew;
   public Double kurtosis;
+  private Log log;
 
   public DenseVector(double[] arr) {
+    this.log = new Log(DenseVector.class.getName());
     if(arr.length ==0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      this.log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.vec = DoubleStream.of(arr)
                           .boxed()
@@ -34,16 +36,18 @@ public class DenseVector implements Vector {
   }
 
   public DenseVector(Double[] arr) {
+    this.log = new Log(DenseVector.class.getName());
     if(arr.length ==0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      this.log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.vec = Arrays.asList(arr);
     this.size = arr.length;
   }
  
   public DenseVector(List<Double> vec) {
+    this.log = new Log(DenseVector.class.getName());
     if(vec.size()==0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      this.log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.vec = List.copyOf(vec);
     this.size = vec.size();
@@ -73,21 +77,21 @@ public class DenseVector implements Vector {
   @Override
   public Double get(int index) {
     if(index > this.size - 1 || index < 0)
-      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
+      this.log.error(Error.INDEX_OUT_OF_BOUND, new IndexOutOfBoundsException(index));
     return this.vec.get(index);
   }
 
   @Override
   public void set(int index, double value) {
     if(index > this.size - 1 || index < 0)
-      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
+      this.log.error(Error.INDEX_OUT_OF_BOUND, new IndexOutOfBoundsException(index));
     this.vec.set(index, Double.valueOf(value));
   }
 
   @Override
   public void delete(int index) {
     if(index > this.size - 1 || index < 0)
-      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
+      this.log.error(Error.INDEX_OUT_OF_BOUND, new IndexOutOfBoundsException(index));
     this.vec.remove(index);
   }
 

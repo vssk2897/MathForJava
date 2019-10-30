@@ -14,8 +14,8 @@ public class Log {
     this.LOGGER.debug(message);
   }
 
-  public void fatal(String message) {
-    this.LOGGER.fatal(message);
+  public void fatal(String message, Exception exception) {
+    this.LOGGER.fatal(message, exception);
   }
 
   public void info(String message) {

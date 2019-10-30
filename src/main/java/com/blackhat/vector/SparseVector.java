@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
-
+import com.blackhat.lib.*;
 public class SparseVector implements Vector {
   
   private static final long serialVersionUID = 8551945475136264769L;
@@ -21,7 +21,7 @@ public class SparseVector implements Vector {
   public Double variance;
   public Double skew;
   public Double kurtosis;
-  
+  protected Log log;
   /*
   public SparseVector(int length) { 
     this.vec = new ArrayList<Double>(); 
@@ -29,16 +29,18 @@ public class SparseVector implements Vector {
   */
 
   public SparseVector(List<Double> vec) {
+    this.log = new Log(SparseVector.class.getName());
     if(vec.size() == 0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      this.log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.vec = List.copyOf(vec);
     this.size = vec.size();
   }
 
   public SparseVector(double[] arr) {
+    this.log = new Log(SparseVector.class.getName());
     if(arr.length == 0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      this.log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.vec = DoubleStream.of(arr)
                           .boxed()
@@ -47,8 +49,9 @@ public class SparseVector implements Vector {
   }
 
   public SparseVector(Double[] arr) {
+    this.log = new Log(SparseVector.class.getName());
     if(arr.length == 0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      this.log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.vec = Arrays.asList(arr);
     this.size = this.vec.size();
@@ -78,21 +81,21 @@ public class SparseVector implements Vector {
   @Override
   public Double get(int index) {
     if(index > this.size - 1 || index < 0)
-      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
+      this.log.error(Error.INDEX_OUT_OF_BOUND, new IndexOutOfBoundsException(index));
     return this.vec.get(index);
   }
-
+    
   @Override
   public void set(int index, double value) {
     if(index > this.size - 1 || index < 0)
-      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
+      this.log.error(Error.INDEX_OUT_OF_BOUND, new IndexOutOfBoundsException(index));
     this.vec.set(index, Double.valueOf(value));
   }
 
   @Override
   public void delete(int index) {
     if(index > this.size - 1 || index < 0)
-      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
+      this.log.error(Error.INDEX_OUT_OF_BOUND, new IndexOutOfBoundsException(index));
     this.vec.remove(index);
   }
 
@@ -104,7 +107,7 @@ public class SparseVector implements Vector {
 
   @Override
   public void printVector() {
-    System.out.println(this.vec.toString());
+    log.info(this.vec.toString());
   }
 
   public void addConstant(double C) {
