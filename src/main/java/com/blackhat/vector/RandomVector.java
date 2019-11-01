@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import com.blackhat.lib.*;
 
 public class RandomVector implements Vector {
   private static final long serialVersionUID = 5698565322324L;
@@ -17,10 +18,11 @@ public class RandomVector implements Vector {
   private Double variance;
   private Double skew;
   private Double kurtosis;
- 
+  private Log log;
+
   public RandomVector(int length) {
     if(length ==0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.vec = ThreadLocalRandom.current()
                     .doubles((long) length)
@@ -31,7 +33,7 @@ public class RandomVector implements Vector {
 
   public RandomVector(int length, double origin, double bound) {
     if(length ==0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.vec = ThreadLocalRandom.current()
                                 .doubles((long) length, origin, bound)
@@ -66,18 +68,18 @@ public class RandomVector implements Vector {
   @Override
   public Double get(int index) {
     if(index > this.size - 1 || index < 0)
-      throw new IndexOutOfBoundsException(Error.INDEX_OUT_OF_BOUND + index);
+      log.error(Error.INDEX_OUT_OF_BOUND, new IndexOutOfBoundsException(index));
     return this.vec.get(index);
   }
 
   @Override
   public void set(int index, double value) {
-    throw new UnsupportedOperationException(Error.RANDOM_VECTOR_SET_ERROR);
+    log.error(Error.RANDOM_VECTOR_SET_ERROR, new UnsupportedOperationException(String.valueOf(value)));
   }
 
   @Override
   public void delete(int index) {
-    throw new UnsupportedOperationException(Error.RANDOM_VECTOR_DELETE_ERROR);
+    log.error(Error.RANDOM_VECTOR_SET_ERROR, new UnsupportedOperationException(String.valueOf(index)));
   }
 
   @Override

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import com.blackhat.lib.*;
 public class HashedVector extends SparseVector {
   
   /**
@@ -16,16 +16,18 @@ public class HashedVector extends SparseVector {
 
   public HashedVector(double[] arr) {
     super(arr);
+    this.log = new Log(HashedVector.class.getName());
     if(arr.length == 0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      this.log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.hmap = new HashMap<Integer, Double>();
   }
 
   public HashedVector(List<Double> vec) {
     super(vec);
+    this.log = new Log(HashedVector.class.getName());
     if(vec.size() == 0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      this.log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.hmap = new HashMap<Integer, Double>();
 
@@ -33,18 +35,26 @@ public class HashedVector extends SparseVector {
 
   public HashedVector(Double[] arr) {
     super(arr);
+    this.log = new Log(HashedVector.class.getName());
     if(arr.length == 0) {
-      throw new InvalidParameterException(Error.VECTOR_INITIALIZATION_ERROR);
+      this.log.fatal(Error.VECTOR_INITIALIZATION_ERROR, new InvalidParameterException());
     }
     this.hmap = new HashMap<Integer, Double>();
   }
 
   public Double get(Integer index) {
-    return this.hmap.get(index);
+    if(this.hmap.containsKey(index))
+      return this.hmap.get(index);
+    this.log.warn(Error.HASHED_VECTOR_GET_ERROR);
+    return null;
   }
 
   public void set(Integer index, Double value) {
+    try{
     this.hmap.put(index, value);
+    } catch(Exception exception) {
+      this.log.error(Error.HASHED_VECTOR_SET_ERROR, exception);
+    }
   }
 
   public Set<Integer> getIndices() {
@@ -60,7 +70,7 @@ public class HashedVector extends SparseVector {
   }
   
   public void printHashedVector() {
-    System.out.println(this.hmap.toString());
+    log.info(this.hmap.toString());
   }
 
   public void createHashedVector() {
