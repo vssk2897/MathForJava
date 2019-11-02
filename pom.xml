@@ -20,10 +20,16 @@
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.3.1</version>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.junit.vintage</groupId>
+        <artifactId>junit-vintage-engine</artifactId>
+        <version>5.3.1</version>
+        <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -56,7 +62,19 @@
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
+          <version>3.0.0-M3</version>
+            <configuration>
+              <groups>acceptance | !feature-a</groups>
+              <excludedGroups>integration, regression</excludedGroups>
+              <properties>
+                <configurationParameters>
+                  junit.jupiter.conditions.deactivate = *
+                  junit.jupiter.extensions.autodetection.enabled = true
+                  junit.jupiter.testinstance.lifecycle.default = per_class
+                  junit.jupiter.execution.parallel.enabled = true
+                </configurationParameters>
+              </properties>
+            </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
