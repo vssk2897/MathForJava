@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("Sparse Vector Test Suite")
-public class SparseVectorTest implements VectorTest {
+public class HashedVectorTest implements VectorTest {
 
   Log log = new Log(SparseVectorTest.class.getName());
   double[] arr1;
@@ -54,8 +54,8 @@ public class SparseVectorTest implements VectorTest {
   @Test
   public void dotProduct() {
   try {  
-    SparseVector vec1 = new SparseVector(arr1);
-    SparseVector vec2 = new SparseVector(arr2);
+    HashedVector vec1 = new HashedVector(arr1);
+    HashedVector vec2 = new HashedVector(arr2);
     StopWatch sw = StopWatch.start();
     vec1.dotProduct(vec2);
     System.out.println("Time taken for dot product of vector of length 100 is " + (sw.time()/1000000.0));
@@ -97,8 +97,8 @@ public class SparseVectorTest implements VectorTest {
 
     //System.out.println("-----" + Arrays.toString(arr2) );
     //System.out.println("------------- " + Arrays.compare(arr2, t));
-    SparseVector vec1 = new SparseVector(this.arr1);
-    SparseVector vec2 = new SparseVector(arr2);
+    HashedVector vec1 = new HashedVector(this.arr1);
+    HashedVector vec2 = new HashedVector(arr2);
     vec1.dotProduct(vec2);
     System.out.println("Time taken for dot product of vector of length 100 is " + (sw.time()/1000000.0));
     double pa = this.reverseMultiply();
